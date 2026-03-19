@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>HealingWorldStudios — Learning Platform for Nurses</title>
+<meta name="description" content="Empowering the next generation of nurses through knowledge and community."/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f0d;--bg2:#0d1410;
+  --surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);--border2:rgba(134,207,141,0.25);
+  --green:#86cf8d;--green2:#4d9e56;--green3:#2e6634;
+  --teal:#6ecec9;--gold:#c9a96e;
+  --text:#e8ede9;--text2:#9fb5a2;--text3:#6a8870;
+  --radius:14px;--radius2:22px;
+  --shadow:0 8px 32px rgba(0,0,0,0.45);
+  --glow:0 0 40px rgba(134,207,141,0.12);
+  --ff-display:'Playfair Display',Georgia,serif;
+  --ff-body:'DM Sans',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:16px;line-height:1.6}
+
+#aura{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#aura::before{content:'';position:absolute;width:120vw;height:120vh;top:-20vh;left:-10vw;
+  background:radial-gradient(ellipse 60% 50% at 30% 30%,rgba(46,102,52,.28) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 60% at 75% 70%,rgba(78,158,86,.18) 0%,transparent 65%),
+             radial-gradient(ellipse 40% 35% at 55% 10%,rgba(110,206,201,.10) 0%,transparent 60%);
+  animation:aura1 18s ease-in-out infinite alternate}
+#aura::after{content:'';position:absolute;width:100vw;height:100vh;
+  background:radial-gradient(ellipse 45% 40% at 80% 20%,rgba(201,169,110,.07) 0%,transparent 60%),
+             radial-gradient(ellipse 55% 45% at 15% 80%,rgba(46,102,52,.20) 0%,transparent 70%);
+  animation:aura2 22s ease-in-out infinite alternate}
+@keyframes aura1{0%{transform:translate(0,0) scale(1)}50%{transform:translate(3vw,2vh) scale(1.04)}100%{transform:translate(-2vw,4vh) scale(.97)}}
+@keyframes aura2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-4vw,-3vh) scale(1.06)}}
+
+#app{position:relative;z-index:1}
+.page{padding-top:64px;min-height:100vh}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,4vw,48px);height:64px;background:rgba(10,15,13,.88);
+  backdrop-filter:blur(20px) saturate(160%);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--ff-display);font-size:1.18rem;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap;user-select:none}
+.nav-logo em{color:var(--text);font-style:normal;font-weight:400}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+.nav-links a,.nav-links button{font-size:.875rem;font-weight:500;color:var(--text2);text-decoration:none;
+  padding:7px 13px;border-radius:8px;background:none;border:none;cursor:pointer;
+  font-family:var(--ff-body);transition:color .2s,background .2s;white-space:nowrap}
+.nav-links a:hover,.nav-links button:hover{color:var(--text);background:var(--surface2)}
+.nav-links a.active{color:var(--green)}
+.nav-cta{background:var(--green3)!important;color:var(--green)!important;border:1px solid var(--border2)!important}
+.nav-cta:hover{background:var(--green2)!important;color:#fff!important}
+.nav-ham{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;padding:8px;line-height:1}
+@media(max-width:768px){
+  .nav-links{display:none;flex-direction:column;gap:4px;position:fixed;top:64px;left:0;right:0;
+    background:rgba(10,15,13,.97);backdrop-filter:blur(20px);padding:16px;
+    border-bottom:1px solid var(--border);z-index:199}
+  .nav-links.open{display:flex}
+  .nav-ham{display:block}
+}
+
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--ff-body);font-size:.9rem;font-weight:600;
+  padding:12px 28px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;
+  transition:all .25s;letter-spacing:.02em;line-height:1.2}
+.btn-primary{background:linear-gradient(135deg,var(--green2),var(--green3));color:#fff;box-shadow:0 4px 20px rgba(77,158,86,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(77,158,86,.5)}
+.btn-outline{background:transparent;color:var(--green);border:1px solid var(--border2)}
+.btn-outline:hover{background:rgba(134,207,141,.08);transform:translateY(-2px)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-sm{padding:8px 16px;font-size:.82rem}
+.btn-lg{padding:15px 36px;font-size:1rem;border-radius:12px}
+.btn-danger{background:rgba(220,80,80,.12);color:#e87a7a;border:1px solid rgba(220,80,80,.25)}
+.btn-danger:hover{background:rgba(220,80,80,.22)}
+.btn-full{width:100%;justify-content:center}
+button:disabled{opacity:.6;cursor:not-allowed!important;transform:none!important}
+
+.section{padding:clamp(60px,8vw,120px) clamp(16px,5vw,80px)}
+.section-label{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+.section-title{font-family:var(--ff-display);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;line-height:1.2;margin-bottom:16px}
+.section-sub{color:var(--text2);font-size:1.05rem;line-height:1.75;max-width:520px}
+.sec-head{margin-bottom:clamp(32px,5vw,60px)}
+.sec-head.ctr{text-align:center}.sec-head.ctr .section-sub{margin:0 auto}
+
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(310px,100%),1fr));gap:24px}
+.g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(420px,100%),1fr));gap:24px}
+.g4{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(190px,100%),1fr));gap:20px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+@media(max-width:860px){.two-col{grid-template-columns:1fr;gap:36px}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius2);
+  padding:28px;backdrop-filter:blur(12px);transition:transform .3s,border-color .3s,box-shadow .3s}
+.card.click{cursor:pointer}
+.card.click:hover{transform:translateY(-4px);border-color:var(--border2);box-shadow:var(--glow),var(--shadow)}
+
+.course-card{display:flex;flex-direction:column}
+.cat-tag{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px;width:fit-content}
+.course-card h3{font-family:var(--ff-display);font-size:1.15rem;font-weight:600;margin-bottom:10px;line-height:1.3}
+.course-card .cdesc{color:var(--text2);font-size:.88rem;line-height:1.65;flex:1;margin-bottom:20px}
+.cmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cmeta span{font-size:.78rem;color:var(--text3)}
+.pbwrap{margin-top:14px}
+.pb-lbl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text3);margin-bottom:6px}
+.pb{height:4px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden}
+.pb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green3),var(--green));transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+
+.bdg{font-size:.73rem;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap}
+.bdg-done{background:rgba(134,207,141,.12);color:var(--green)}
+.bdg-prog{background:rgba(201,169,110,.12);color:var(--gold)}
+.bdg-lock{background:rgba(255,255,255,.05);color:var(--text3)}
+
+.tag-clinical{background:rgba(110,206,201,.1);color:var(--teal)}
+.tag-pharma{background:rgba(201,169,110,.1);color:var(--gold)}
+.tag-care{background:rgba(134,207,141,.1);color:var(--green)}
+.tag-comm{background:rgba(200,160,220,.1);color:#c8a0dc}
+.tag-guide{background:rgba(200,200,255,.1);color:#a0a0ee}
+
+.hero{padding:clamp(80px,12vw,160px) clamp(16px,5vw,80px) clamp(60px,10vw,120px);text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(134,207,141,.08);
+  border:1px solid var(--border2);color:var(--green);font-size:.8rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:32px}
+.hero h1{font-family:var(--ff-display);font-size:clamp(2.1rem,5.5vw,4rem);font-weight:700;
+  line-height:1.15;letter-spacing:-.02em;max-width:820px;margin:0 auto 24px;
+  background:linear-gradient(135deg,#e8ede9 0%,#86cf8d 50%,#6ecec9 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2vw,1.18rem);color:var(--text2);max-width:560px;margin:0 auto 48px;font-weight:300;line-height:1.85}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-scroll{margin-top:64px;color:var(--text3);font-size:.8rem;letter-spacing:.06em}
+.hero-scroll::after{content:'';display:block;width:1px;height:48px;background:linear-gradient(to bottom,var(--green3),transparent);margin:10px auto 0}
+
+.stat-card{text-align:center}
+.stat-num{font-family:var(--ff-display);font-size:2.4rem;font-weight:700;color:var(--green);line-height:1}
+.stat-label{color:var(--text2);font-size:.88rem;margin-top:8px}
+
+.tcard{position:relative}
+.tcard::before{content:'"';font-family:var(--ff-display);font-size:5rem;color:var(--green3);
+  position:absolute;top:12px;left:20px;line-height:1;opacity:.6;pointer-events:none}
+.tcard p{padding-top:36px;color:var(--text2);line-height:1.85;font-size:.94rem}
+.tauthor{display:flex;align-items:center;gap:12px;margin-top:20px}
+.tavatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green3),var(--green2));
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0}
+.tname{font-weight:600;font-size:.9rem}
+.trole{font-size:.78rem;color:var(--text3)}
+
+.blog-card{display:flex;flex-direction:column}
+.blog-card h3{font-family:var(--ff-display);font-size:1.08rem;font-weight:600;line-height:1.4;margin-bottom:10px}
+.blog-card .bdesc{color:var(--text2);font-size:.87rem;line-height:1.65;flex:1;margin-bottom:16px}
+.blog-meta{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.blog-meta span{font-size:.75rem;color:var(--text3)}
+.blog-tag{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:100px}
+.blog-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.arow{display:flex;align-items:center;gap:8px}
+.aavatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--green3),var(--green2));
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px clamp(16px,4vw,40px)}
+.auth-box{width:100%;max-width:440px;background:rgba(13,20,16,.92);border:1px solid var(--border);
+  border-radius:var(--radius2);padding:clamp(28px,5vw,48px);backdrop-filter:blur(24px);box-shadow:var(--shadow)}
+.auth-logo{font-family:var(--ff-display);font-size:1.4rem;color:var(--green);margin-bottom:8px}
+.auth-box h2{font-family:var(--ff-display);font-size:1.75rem;margin-bottom:6px}
+.auth-sub{color:var(--text2);font-size:.9rem;margin-bottom:28px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:7px}
+.fg input{width:100%;padding:12px 15px;background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:var(--ff-body);font-size:.9rem;
+  transition:border-color .2s,box-shadow .2s;outline:none}
+.fg input:focus{border-color:var(--green3);box-shadow:0 0 0 3px rgba(77,158,86,.15)}
+.fg input.err{border-color:#e87a7a}
+.form-row{display:flex;gap:12px}
+.form-row .fg{flex:1;min-width:0}
+.auth-foot{margin-top:22px;text-align:center;font-size:.85rem;color:var(--text3)}
+.auth-foot a{color:var(--green);text-decoration:none;font-weight:500;cursor:pointer}
+.auth-foot a:hover{text-decoration:underline}
+.forgot-row{text-align:right;margin-bottom:18px}
+.forgot-row a{font-size:.82rem;color:var(--green);text-decoration:none;cursor:pointer}
+.terms-note{font-size:.78rem;color:var(--text3);margin-bottom:18px;line-height:1.6}
+.terms-note a{color:var(--green);cursor:pointer;text-decoration:none}
+
+.alert{padding:13px 16px;border-radius:10px;font-size:.88rem;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
+.alert-err{background:rgba(220,80,80,.12);border:1px solid rgba(220,80,80,.25);color:#e87a7a}
+.alert-ok{background:rgba(134,207,141,.1);border:1px solid var(--border2);color:var(--green)}
+
+.dash{padding:80px clamp(16px,5vw,60px) 60px}
+.dash-head{margin-bottom:40px}
+.greeting{font-size:.82rem;color:var(--green);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.dash-head h1{font-family:var(--ff-display);font-size:clamp(1.8rem,4vw,2.5rem);margin-top:6px}
+.sec-heading{font-family:var(--ff-display);font-size:1.25rem;margin-bottom:18px}
+.dash-sec{margin-bottom:44px}
+
+.mod-item{display:flex;align-items:center;gap:14px;padding:13px 18px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;
+  transition:border-color .2s,background .2s,transform .2s}
+.mod-item:hover{border-color:var(--border2);background:var(--surface2);transform:translateX(4px)}
+.mod-icon{width:38px;height:38px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-size:1rem;background:rgba(134,207,141,.1)}
+.mod-info{flex:1;min-width:0}
+.mod-title{font-weight:600;font-size:.91rem}
+.mod-meta{font-size:.78rem;color:var(--text3);margin-top:2px}
+
+.cdetail{padding:80px clamp(16px,5vw,60px) 60px;max-width:900px;margin:0 auto}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--text3);margin-bottom:24px;flex-wrap:wrap}
+.breadcrumb a{color:var(--text3);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{color:var(--green)}
+.breadcrumb .sep{opacity:.4}
+.cd-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius2);padding:32px;margin-bottom:32px}
+.cd-hero h1{font-family:var(--ff-display);font-size:clamp(1.5rem,4vw,2.1rem);margin:12px 0 10px}
+.cd-hero p{color:var(--text2);line-height:1.75}
+.cd-meta{display:flex;gap:18px;margin-top:18px;flex-wrap:wrap}
+.cd-meta span{font-size:.82rem;color:var(--text3)}
+.notice{background:rgba(134,207,141,.07);border:1px solid var(--border2);border-radius:12px;
+  padding:14px 18px;margin-bottom:24px;font-size:.87rem;color:var(--text2)}
+.notice strong{color:var(--green)}
+
+.sub-box{background:linear-gradient(135deg,rgba(46,102,52,.25),rgba(13,20,16,.8));
+  border:1px solid var(--border2);border-radius:var(--radius2);padding:clamp(40px,6vw,80px);text-align:center}
+.sub-form{display:flex;gap:12px;max-width:500px;margin:28px auto 0;flex-wrap:wrap}
+.sub-form input{flex:1;min-width:200px;padding:13px 16px;background:rgba(255,255,255,.07);
+  border:1px solid var(--border);border-radius:10px;color:var(--text);
+  font-family:var(--ff-body);font-size:.9rem;outline:none;transition:border-color .2s}
+.sub-form input:focus{border-color:var(--green3)}
+
+footer{border-top:1px solid var(--border);padding:clamp(48px,6vw,80px) clamp(16px,5vw,80px) 32px;margin-top:60px}
+.foot-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:40px;margin-bottom:44px}
+@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.foot-grid{grid-template-columns:1fr}}
+.foot-brand p{color:var(--text3);font-size:.87rem;line-height:1.7;margin-top:12px;max-width:280px}
+.foot-col h4{font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:14px}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-col ul a{font-size:.87rem;color:var(--text3);text-decoration:none;cursor:pointer;transition:color .2s}
+.foot-col ul a:hover{color:var(--green)}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;
+  border-top:1px solid var(--border);font-size:.8rem;color:var(--text3);flex-wrap:wrap;gap:10px}
+
+.legal{max-width:780px;margin:0 auto;padding:100px clamp(16px,4vw,40px) 80px}
+.legal h1{font-family:var(--ff-display);font-size:clamp(2rem,4vw,2.8rem);margin-bottom:8px}
+.legal .updated{color:var(--text3);font-size:.85rem;margin-bottom:36px}
+.legal h2{font-family:var(--ff-display);font-size:1.3rem;margin:32px 0 12px;color:var(--green)}
+.legal p{color:var(--text2);line-height:1.85;font-size:.94rem;margin-bottom:12px}
+.legal ul{padding-left:22px;margin-bottom:12px}
+.legal ul li{color:var(--text2);line-height:1.85;font-size:.94rem;margin-bottom:7px}
+.legal strong{color:var(--text)}
+
+.why-item{display:flex;gap:14px;align-items:flex-start}
+.why-icon{width:40px;height:40px;border-radius:10px;background:rgba(134,207,141,.1);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.divider{height:1px;background:var(--border);margin:0 clamp(16px,5vw,80px)}
+.tc{text-align:center}.mt4{margin-top:16px}.mt6{margin-top:24px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.nf{padding:150px clamp(16px,5vw,80px) 80px;text-align:center}
+.nf .code{font-family:var(--ff-display);font-size:6rem;color:var(--green3);line-height:1}
+.nf h2{font-family:var(--ff-display);font-size:1.8rem;margin:16px 0 12px}
+.nf p{color:var(--text2);margin-bottom:28px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.fade{animation:fadeUp .5s ease both}
+.fd1{animation-delay:.05s}.fd2{animation-delay:.15s}.fd3{animation-delay:.25s}.fd4{animation-delay:.38s}
+
+[data-page]{display:none}
+[data-page].active{display:block}
+</style>
+</head>
+<body>
+<div id="aura"></div>
+<div id="app">
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo" onclick="go('/')">✦ Healing<em>World</em>Studios</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#/" onclick="go('/');return false" data-nav="/">Home</a></li>
+    <li><a href="#/courses" onclick="go('/courses');return false" data-nav="/courses">Courses</a></li>
+    <li><a href="#/blog" onclick="go('/blog');return false" data-nav="/blog">Knowledge Hub</a></li>
+    <li><a href="#/subscribe" onclick="go('/subscribe');return false" data-nav="/subscribe">Subscribe</a></li>
+    <li id="nav-dash" style="display:none"><a href="#/dashboard" onclick="go('/dashboard');return false" data-nav="/dashboard">Dashboard</a></li>
+    <li id="nav-signout" style="display:none"><button onclick="doSignOut()">Sign Out</button></li>
+    <li id="nav-signin"><a href="#/signin" onclick="go('/signin');return false" data-nav="/signin">Sign In</a></li>
+    <li id="nav-signup"><a href="#/signup" onclick="go('/signup');return false" class="nav-cta" data-nav="/signup">Get Started</a></li>
+  </ul>
+  <button class="nav-ham" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<!-- HOME PAGE -->
+<div data-page="/" class="page">
+  <section class="hero">
+    <div class="hero-badge">For Student &amp; Newly Qualified Nurses</div>
+    <h1>Empowering the Next Generation of Nurses Through Knowledge &amp; Community</h1>
+    <p>Evidence-based learning, structured modules, and a supportive community — everything you need to become the nurse you were meant to be.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary btn-lg" id="hero-cta1" onclick="go('/signup')">Start Learning Free</button>
+      <button class="btn btn-outline btn-lg" onclick="go('/courses')">Explore Courses</button>
+    </div>
+    <div class="hero-scroll">Scroll to discover</div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="g4" style="max-width:900px;margin:0 auto">
+      <div class="card stat-card fade fd1"><div class="stat-num">2,400+</div><div class="stat-label">Active Students</div></div>
+      <div class="card stat-card fade fd2"><div class="stat-num">34</div><div class="stat-label">Modules Available</div></div>
+      <div class="card stat-card fade fd3"><div class="stat-num">6</div><div class="stat-label">Expert Courses</div></div>
+      <div class="card stat-card fade fd4"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="sec-head ctr">
+      <div class="section-label">Featured Courses</div>
+      <h2 class="section-title">Learn What Matters on the Ward</h2>
+      <p class="section-sub">Practical, evidence-based content designed around how nurses actually learn.</p>
+    </div>
+    <div class="g3" id="home-courses"></div>
+    <div class="tc mt6"><button class="btn btn-outline" onclick="go('/courses')">View All Courses →</button></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="two-col">
+      <div>
+        <div class="section-label">Why HealingWorldStudios</div>
+        <h2 class="section-title">Learning That Feels Like Support</h2>
+        <p class="section-sub">We know nursing training is demanding. Our platform is built around your reality — short on time, high on pressure, needing content that actually sticks.</p>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:18px">
+          <div class="why-item"><div class="why-icon">🎯</div><div><div style="font-weight:600;margin-bottom:3px">Evidence-Based</div><div style="font-size:.88rem;color:var(--text2);line-height:1.65">Every module is grounded in NMC standards and current clinical evidence.</div></div></div>
+          <div class="why-item"><div class="why-icon">⏱️</div><div><div style="font-weight:600;margin-bottom:3px">Bite-Sized</div><div style="font-size:.88rem;color:var(--text2);line-height:1.65">Modules designed for busy students — complete in a lunch break or commute.</div></div></div>
+          <div class="why-item"><div class="why-icon">🤝</div><div><div style="font-weight:600;margin-bottom:3px">Supportive</div><div style="font-size:.88rem;color:var(--text2);line-height:1.65">A calm, non-judgmental space to learn, ask, and grow as a clinician.</div></div></div>
+          <div class="why-item"><div class="why-icon">📱</div><div><div style="font-weight:600;margin-bottom:3px">Anywhere</div><div style="font-size:.88rem;color:var(--text2);line-height:1.65">Fully responsive — learn on ward, at home, or on the bus.</div></div></div>
+        </div>
+      </div>
+      <div id="home-testimonials" style="display:flex;flex-direction:column;gap:16px"></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="sub-box">
+      <div class="section-label" style="display:flex;justify-content:center;margin-bottom:14px">Join the Community</div>
+      <h2 class="section-title">Ready to Grow as a Nurse?</h2>
+      <p style="color:var(--text2);max-width:480px;margin:0 auto;line-height:1.75">Join over 2,400 nurses building their knowledge, confidence, and clinical practice with HealingWorldStudios.</p>
+      <div style="margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" onclick="go('/signup')">Create Free Account</button>
+        <button class="btn btn-ghost btn-lg" onclick="go('/courses')">Explore Courses</button>
+      </div>
+    </div>
+  </section>
+  <div id="footer-home"></div>
+</div>
+
+<!-- COURSES PAGE -->
+<div data-page="/courses" class="page section">
+  <div class="sec-head">
+    <div class="section-label">Learning Library</div>
+    <h1 class="section-title">All Courses</h1>
+    <p class="section-sub">Evidence-based modules for every stage of your nursing journey.</p>
+  </div>
+  <div class="filter-row" id="course-filters"></div>
+  <div class="g3" id="courses-grid"></div>
+  <div id="footer-courses"></div>
+</div>
+
+<!-- COURSE DETAIL PAGE -->
+<div data-page="/course" class="page">
+  <div class="cdetail" id="course-detail-inner"></div>
+  <div id="footer-course"></div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div data-page="/dashboard" class="page dash">
+  <div class="dash-head">
+    <div class="greeting">Welcome back</div>
+    <h1 id="dash-name">Your Dashboard</h1>
+    <p style="color:var(--text2);margin-top:8px">Continue where you left off — your learning journey awaits.</p>
+  </div>
+  <div class="g4" id="dash-stats" style="margin-bottom:36px"></div>
+  <div id="dash-body"></div>
+  <div id="footer-dash"></div>
+</div>
+
+<!-- BLOG PAGE -->
+<div data-page="/blog" class="page section">
+  <div class="sec-head">
+    <div class="section-label">Knowledge Hub</div>
+    <h1 class="section-title">Articles &amp; Insights</h1>
+    <p class="section-sub">Expert-written pieces on clinical practice, career development, and nurse wellbeing.</p>
+  </div>
+  <div class="g3" id="blog-grid"></div>
+  <div id="footer-blog"></div>
+</div>
+
+<!-- SUBSCRIBE PAGE -->
+<div data-page="/subscribe" class="page section">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="sub-box">
+      <div class="section-label" style="display:flex;justify-content:center;margin-bottom:14px">Newsletter</div>
+      <h1 class="section-title">Stay Updated With New Modules &amp; Insights</h1>
+      <p style="color:var(--text2);line-height:1.75;max-width:460px;margin:14px auto 0">Join 2,400+ nurses receiving weekly updates, new module announcements, and clinical practice articles — straight to your inbox.</p>
+      <div id="sub-form-wrap">
+        <div id="sub-err"></div>
+        <div class="sub-form">
+          <input type="email" id="sub-email" placeholder="your@email.com"/>
+          <button class="btn btn-primary" onclick="doSubscribe()">Subscribe →</button>
+        </div>
+      </div>
+      <div id="sub-success" class="alert alert-ok" style="display:none;max-width:400px;margin:24px auto 0;justify-content:center">✓ You're subscribed! Welcome to the HealingWorldStudios community.</div>
+      <p style="font-size:.78rem;color:var(--text3);margin-top:14px">No spam. Unsubscribe any time. We respect your privacy.</p>
+    </div>
+    <div style="margin-top:48px">
+      <h2 style="font-family:var(--ff-display);font-size:1.5rem;margin-bottom:22px">What You'll Receive</h2>
+      <div class="g2">
+        <div class="card" style="display:flex;gap:14px;align-items:flex-start"><div style="font-size:1.4rem;flex-shrink:0">📬</div><div><div style="font-weight:600;margin-bottom:4px">Weekly Digest</div><div style="font-size:.88rem;color:var(--text2);line-height:1.6">New articles, modules, and clinical resources every Monday morning.</div></div></div>
+        <div class="card" style="display:flex;gap:14px;align-items:flex-start"><div style="font-size:1.4rem;flex-shrink:0">🎓</div><div><div style="font-weight:600;margin-bottom:4px">Module Alerts</div><div style="font-size:.88rem;color:var(--text2);line-height:1.6">Be first to know when new courses and modules go live.</div></div></div>
+        <div class="card" style="display:flex;gap:14px;align-items:flex-start"><div style="font-size:1.4rem;flex-shrink:0">💡</div><div><div style="font-weight:600;margin-bottom:4px">Clinical Tips</div><div style="font-size:.88rem;color:var(--text2);line-height:1.6">Quick evidence-based practice tips for the ward.</div></div></div>
+        <div class="card" style="display:flex;gap:14px;align-items:flex-start"><div style="font-size:1.4rem;flex-shrink:0">🤝</div><div><div style="font-weight:600;margin-bottom:4px">Community Stories</div><div style="font-size:.88rem;color:var(--text2);line-height:1.6">Real stories from student nurses and NQNs navigating training.</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="footer-sub"></div>
+</div>
+
+<!-- SIGN IN PAGE -->
+<div data-page="/signin" class="page auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">✦ HealingWorldStudios</div>
+    <h2>Welcome back</h2>
+    <p class="auth-sub">Sign in to continue your learning journey.</p>
+    <div id="signin-err"></div>
+    <div class="fg"><label>Email address</label><input type="email" id="si-email" placeholder="your@email.com"/></div>
+    <div class="fg"><label>Password</label><input type="password" id="si-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()"/></div>
+    <div class="forgot-row"><a onclick="go('/forgot')">Forgot password?</a></div>
+    <button class="btn btn-primary btn-full" id="signin-btn" onclick="doSignIn()">Sign In →</button>
+    <div class="auth-foot">Don't have an account? <a onclick="go('/signup')">Sign up free</a></div>
+  </div>
+</div>
+
+<!-- SIGN UP PAGE -->
+<div data-page="/signup" class="page auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">✦ HealingWorldStudios</div>
+    <h2>Create your account</h2>
+    <p class="auth-sub">Join thousands of nurses building their knowledge.</p>
+    <div id="signup-err"></div>
+    <div class="form-row">
+      <div class="fg"><label>First name</label><input type="text" id="su-first" placeholder="Jane"/></div>
+      <div class="fg"><label>Last name</label><input type="text" id="su-last" placeholder="Smith"/></div>
+    </div>
+    <div class="fg"><label>Email address</label><input type="email" id="su-email" placeholder="your@email.com"/></div>
+    <div class="fg"><label>Password <span style="font-weight:400;color:var(--text3)">— min 8 chars</span></label><input type="password" id="su-pass" placeholder="••••••••"/></div>
+    <div class="fg"><label>Confirm password</label><input type="password" id="su-confirm" placeholder="••••••••"/></div>
+    <p class="terms-note">By signing up, you agree to our <a onclick="go('/terms')">Terms of Service</a> and <a onclick="go('/privacy')">Privacy Policy</a>.</p>
+    <button class="btn btn-primary btn-full" id="signup-btn" onclick="doSignUp()">Create Account →</button>
+    <div class="auth-foot">Already have an account? <a onclick="go('/signin')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD PAGE -->
+<div data-page="/forgot" class="page auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">✦ HealingWorldStudios</div>
+    <h2>Reset your password</h2>
+    <p class="auth-sub">Enter your email and we'll send you a reset link.</p>
+    <div id="forgot-msg"></div>
+    <div id="forgot-field" class="fg"><label>Email address</label><input type="email" id="fp-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doForgot()"/></div>
+    <button class="btn btn-primary btn-full" id="forgot-btn" onclick="doForgot()">Send Reset Link →</button>
+    <div class="auth-foot"><a onclick="go('/signin')">← Back to Sign In</a></div>
+  </div>
+</div>
+
+<!-- TERMS PAGE -->
+<div data-page="/terms" class="page">
+  <div class="legal">
+    <h1>Terms of Service</h1>
+    <p class="updated">Last updated: 1 January 2025</p>
+    <p>These Terms of Service ("Terms") govern your use of the HealingWorldStudios platform ("Service"), operated by HealingWorldStudios Ltd ("we", "us", "our"). By accessing or using the Service, you agree to be bound by these Terms.</p>
+    <h2>1. Eligibility &amp; Account Registration</h2>
+    <p>The Service is intended for individuals aged 16 years and over engaged in nursing education or professional development. By registering, you confirm that:</p>
+    <ul>
+      <li>The information you provide is accurate, complete, and up to date.</li>
+      <li>You will maintain the security of your password and accept responsibility for all activity under your account.</li>
+      <li>You will notify us immediately of any unauthorised use of your account.</li>
+      <li>You will not create more than one account per person.</li>
+    </ul>
+    <h2>2. User Responsibilities</h2>
+    <p>As a user of HealingWorldStudios, you agree to:</p>
+    <ul>
+      <li>Use the Service solely for lawful educational and professional development purposes.</li>
+      <li>Treat all content with respect and not reproduce or commercialise it without our written consent.</li>
+      <li>Engage respectfully within any community features or knowledge-sharing areas.</li>
+      <li>Not attempt to access restricted areas or circumvent any security measures.</li>
+      <li>Verify all clinical guidance against current institutional standards before applying it in practice.</li>
+    </ul>
+    <h2>3. Acceptable Use Policy</h2>
+    <p>The following activities are strictly prohibited:</p>
+    <ul>
+      <li>Sharing content that is harmful, defamatory, abusive, hateful, or discriminatory.</li>
+      <li>Impersonating any individual, healthcare professional, or organisation.</li>
+      <li>Using automated scripts, bots, or data-scraping tools to access content.</li>
+      <li>Attempting to interfere with the platform's operation, security, or availability.</li>
+      <li>Using the platform for commercial advertising or spam without our prior written consent.</li>
+    </ul>
+    <p>We reserve the right to suspend or terminate accounts that violate this policy without notice.</p>
+    <h2>4. Educational Content Disclaimer</h2>
+    <p>All content on HealingWorldStudios is provided for educational and informational purposes only. It does not constitute clinical advice and must not replace professional judgement, institutional guidelines, or consultation with a qualified healthcare professional. You are solely responsible for the application of any information in clinical practice.</p>
+    <h2>5. Intellectual Property</h2>
+    <p>All content — including course materials, articles, design assets, and branding — is the intellectual property of HealingWorldStudios Ltd or its licensors. You may not reproduce, redistribute, or create derivative works without express written permission.</p>
+    <h2>6. Subscriptions &amp; Payments</h2>
+    <p>Where applicable, access to premium content may require a paid subscription. Fees and refund terms will be clearly communicated at the point of purchase. All payments are processed securely through third-party providers.</p>
+    <h2>7. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by applicable law, HealingWorldStudios Ltd shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, including clinical outcomes arising from reliance on educational content.</p>
+    <p>Our total liability shall not exceed the amount paid by you in the twelve months preceding the claim.</p>
+    <h2>8. Modifications to the Service</h2>
+    <p>We reserve the right to modify, suspend, or discontinue any part of the Service at any time. We will endeavour to provide advance notice of significant changes.</p>
+    <h2>9. Governing Law</h2>
+    <p>These Terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+    <h2>10. Contact</h2>
+    <p>For questions regarding these Terms: <strong style="color:var(--green)">legal@healingworldstudios.com</strong></p>
+  </div>
+  <div id="footer-terms"></div>
+</div>
+
+<!-- PRIVACY PAGE -->
+<div data-page="/privacy" class="page">
+  <div class="legal">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: 1 January 2025 · GDPR compliant</p>
+    <p>HealingWorldStudios Ltd is committed to protecting your personal data. This Privacy Policy explains how we collect, use, store, and share your information in accordance with the UK GDPR and the Data Protection Act 2018.</p>
+    <h2>1. Who We Are</h2>
+    <p>HealingWorldStudios Ltd is the data controller for personal data collected through this Service. Data Protection contact: <strong style="color:var(--green)">privacy@healingworldstudios.com</strong></p>
+    <h2>2. Data We Collect</h2>
+    <p>We collect the following categories of personal data:</p>
+    <ul>
+      <li><strong>Account data:</strong> Name, email address, and encrypted password when you register.</li>
+      <li><strong>Usage data:</strong> Course progress, module completion, time on platform, and page interactions.</li>
+      <li><strong>Communication data:</strong> Email addresses submitted to newsletters and support messages.</li>
+      <li><strong>Technical data:</strong> IP address, browser type, device information, and cookies.</li>
+    </ul>
+    <p>We do not collect sensitive personal data such as health data, ethnicity, or religious beliefs.</p>
+    <h2>3. How We Use Your Data</h2>
+    <ul>
+      <li><strong>Contract performance:</strong> To provide access to the Service and maintain your account.</li>
+      <li><strong>Legitimate interests:</strong> To improve platform performance and prevent fraud.</li>
+      <li><strong>Consent:</strong> To send newsletters and marketing communications (where opted in).</li>
+      <li><strong>Legal obligation:</strong> To comply with applicable laws and regulations.</li>
+    </ul>
+    <h2>4. Data Storage &amp; Security</h2>
+    <p>Your data is stored on secure servers within the UK and EEA, using TLS encryption, password hashing, and access controls. We retain account data for as long as your account is active, deleting it within 90 days of closure unless legally required to retain it.</p>
+    <h2>5. Data Sharing</h2>
+    <p>We do not sell, rent, or trade your personal data. We may share data with trusted service providers (under data processing agreements) and with legal authorities where required by law.</p>
+    <h2>6. Your Rights Under UK GDPR</h2>
+    <p>You have the right to access, rectify, erase, restrict, port, and object to the processing of your personal data. Contact <strong style="color:var(--green)">privacy@healingworldstudios.com</strong> to exercise these rights. We will respond within 30 days.</p>
+    <h2>7. Cookies</h2>
+    <p>We use essential cookies for session management and may use analytics cookies with your consent. You can manage preferences through your browser settings.</p>
+    <h2>8. Children's Privacy</h2>
+    <p>The Service is not directed at children under the age of 16. If you believe we have inadvertently collected data from a minor, please contact us immediately.</p>
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Registered users will be notified of material changes by email or via platform notice.</p>
+    <h2>10. Complaints</h2>
+    <p>You have the right to lodge a complaint with the Information Commissioner's Office (ICO) at <strong style="color:var(--green)">ico.org.uk</strong>.</p>
+  </div>
+  <div id="footer-privacy"></div>
+</div>
+
+<!-- 404 PAGE -->
+<div data-page="/404" class="page nf">
+  <div class="code">404</div>
+  <h2>Page Not Found</h2>
+  <p>The page you're looking for doesn't exist or has been moved.</p>
+  <button class="btn btn-primary" onclick="go('/')">Back to Home</button>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ─────────────────────────── DATA ──────────────────────────────────────────
+var CATS={
+  clinical:{label:'Clinical Skills',tag:'tag-clinical',icon:'🩺'},
+  pharma:{label:'Pharmacology',tag:'tag-pharma',icon:'💊'},
+  care:{label:'Patient Care',tag:'tag-care',icon:'🏥'},
+  comm:{label:'Communication',tag:'tag-comm',icon:'💬'},
+  guide:{label:'Career Guidance',tag:'tag-guide',icon:'🎓'}
+};
+
+var COURSES=[
+  {id:'c1',cat:'clinical',title:'Fundamentals of Clinical Assessment',
+   desc:'Master the systematic approach to patient assessment — from vital signs to head-to-toe examination — with evidence-based techniques used in modern wards.',
+   modules:8,duration:'6h 20m',level:'Foundation',progress:65,
+   mods:[
+     {title:'Introduction to Clinical Assessment',dur:'18 min',status:'done',icon:'📋'},
+     {title:'Vital Signs: Theory & Practice',dur:'42 min',status:'done',icon:'❤️'},
+     {title:'Neurological Assessment',dur:'38 min',status:'done',icon:'🧠'},
+     {title:'Respiratory Assessment',dur:'35 min',status:'done',icon:'🫁'},
+     {title:'Cardiovascular Assessment',dur:'40 min',status:'progress',icon:'💓'},
+     {title:'Abdominal & GI Assessment',dur:'34 min',status:'locked',icon:'🩻'},
+     {title:'Musculoskeletal Assessment',dur:'30 min',status:'locked',icon:'🦴'},
+     {title:'Documentation & Handover (SBAR)',dur:'25 min',status:'locked',icon:'📝'}
+   ]},
+  {id:'c2',cat:'pharma',title:'Safe Medication Administration',
+   desc:'Learn the five rights of medication administration, understand pharmacokinetics, and develop critical thinking around drug safety and error prevention.',
+   modules:6,duration:'5h 00m',level:'Intermediate',progress:20,
+   mods:[
+     {title:'Pharmacokinetics Essentials',dur:'45 min',status:'done',icon:'🔬'},
+     {title:'The 5 Rights of Medication Safety',dur:'30 min',status:'progress',icon:'✅'},
+     {title:'Oral Medications & Enteral Routes',dur:'35 min',status:'locked',icon:'💊'},
+     {title:'IV Therapy & Cannulation',dur:'55 min',status:'locked',icon:'💉'},
+     {title:'Controlled Drugs & Legal Frameworks',dur:'40 min',status:'locked',icon:'🔒'},
+     {title:'Drug Error Recognition & Reporting',dur:'35 min',status:'locked',icon:'⚠️'}
+   ]},
+  {id:'c3',cat:'care',title:'Person-Centred Care in Practice',
+   desc:'Develop the values, attitudes, and skills needed to deliver compassionate, individualised care that respects patient dignity, autonomy, and cultural background.',
+   modules:7,duration:'4h 45m',level:'Foundation',progress:0,
+   mods:[
+     {title:'What is Person-Centred Care?',dur:'22 min',status:'locked',icon:'🌿'},
+     {title:'Dignity, Respect & Compassion',dur:'30 min',status:'locked',icon:'🤝'},
+     {title:'Consent & Mental Capacity',dur:'38 min',status:'locked',icon:'✍️'},
+     {title:'Cultural Competence',dur:'35 min',status:'locked',icon:'🌍'},
+     {title:'End-of-Life Care Conversations',dur:'42 min',status:'locked',icon:'🕊️'},
+     {title:'Working with Families & Carers',dur:'28 min',status:'locked',icon:'👨‍👩‍👧'},
+     {title:'Safeguarding Vulnerable Adults',dur:'50 min',status:'locked',icon:'🛡️'}
+   ]},
+  {id:'c4',cat:'comm',title:'Therapeutic Communication Skills',
+   desc:'Build confidence in patient-facing communication through active listening, de-escalation, breaking bad news, and structured handover techniques.',
+   modules:5,duration:'3h 30m',level:'Foundation',progress:0,
+   mods:[
+     {title:'Foundations of Therapeutic Communication',dur:'25 min',status:'locked',icon:'💬'},
+     {title:'Active Listening & Non-Verbal Cues',dur:'28 min',status:'locked',icon:'👂'},
+     {title:'Breaking Bad News (SPIKES Protocol)',dur:'40 min',status:'locked',icon:'🗣️'},
+     {title:'De-escalation & Conflict Resolution',dur:'35 min',status:'locked',icon:'☮️'},
+     {title:'Interprofessional Communication',dur:'32 min',status:'locked',icon:'🤝'}
+   ]},
+  {id:'c5',cat:'clinical',title:'Wound Care & Tissue Viability',
+   desc:'From wound assessment to dressing selection, explore evidence-based wound management strategies for acute, chronic, and complex wounds encountered in clinical practice.',
+   modules:6,duration:'4h 10m',level:'Intermediate',progress:40,
+   mods:[
+     {title:'Wound Anatomy & Healing Phases',dur:'32 min',status:'done',icon:'🩹'},
+     {title:'Wound Assessment Frameworks',dur:'38 min',status:'done',icon:'🔍'},
+     {title:'Infection, Biofilm & Antimicrobials',dur:'42 min',status:'progress',icon:'🦠'},
+     {title:'Dressing Selection Guide',dur:'30 min',status:'locked',icon:'📦'},
+     {title:'Pressure Ulcer Prevention & Staging',dur:'40 min',status:'locked',icon:'🛏️'},
+     {title:'Leg Ulcers & Compression Therapy',dur:'38 min',status:'locked',icon:'🦵'}
+   ]},
+  {id:'c6',cat:'guide',title:'Newly Qualified Nurse Survival Guide',
+   desc:'Transition into professional practice with confidence. Covers preceptorship, revalidation, managing stress, imposter syndrome, and clinical leadership.',
+   modules:9,duration:'5h 30m',level:'NQN',progress:10,
+   mods:[
+     {title:'Your First Week on the Ward',dur:'20 min',status:'done',icon:'🌱'},
+     {title:'Understanding Preceptorship',dur:'30 min',status:'locked',icon:'📚'},
+     {title:'Time Management in a Busy Ward',dur:'28 min',status:'locked',icon:'⏱️'},
+     {title:'Imposter Syndrome & Building Confidence',dur:'35 min',status:'locked',icon:'🧘'},
+     {title:'NMC Code & Professional Standards',dur:'40 min',status:'locked',icon:'⚖️'},
+     {title:'Revalidation Explained',dur:'38 min',status:'locked',icon:'🔄'},
+     {title:'Clinical Leadership Foundations',dur:'42 min',status:'locked',icon:'🦅'},
+     {title:'Self-Care & Preventing Burnout',dur:'30 min',status:'locked',icon:'💚'},
+     {title:'Career Pathways in Nursing',dur:'27 min',status:'locked',icon:'🗺️'}
+   ]}
+];
+
+var BLOG=[
+  {cat:'Clinical Practice',tag:'tag-clinical',title:'The ABCDE Approach: Why Systematic Assessment Saves Lives',desc:'A structured assessment framework is one of the most powerful tools a nurse can have. We explore how the ABCDE approach reduces clinical errors and improves patient outcomes.',author:'Dr. Sarah Okonkwo',date:'12 Mar 2025',read:'6 min'},
+  {cat:'Mental Wellbeing',tag:'tag-care',title:'Beating Imposter Syndrome as a Newly Qualified Nurse',desc:"Almost every NQN experiences it — that persistent feeling that you're not good enough. Here's how to recognise and overcome it with practical, evidence-backed strategies.",author:'Maya Patel',date:'5 Mar 2025',read:'5 min'},
+  {cat:'Pharmacology',tag:'tag-pharma',title:'Understanding Drug Calculations: A Step-by-Step Guide',desc:'Drug calculations remain one of the most anxiety-inducing aspects of nursing practice. We break it down into manageable steps with real-world ward examples.',author:'Jamie Thornton',date:'22 Feb 2025',read:'8 min'},
+  {cat:'Career',tag:'tag-guide',title:'NMC Revalidation Demystified: Everything You Need to Know',desc:"Revalidation doesn't have to be overwhelming. This guide walks you through requirements, reflective accounts, and CPD hours with practical tips.",author:'Helen Fraser',date:'14 Feb 2025',read:'7 min'},
+  {cat:'Communication',tag:'tag-comm',title:'SBAR Handover: Communicating with Confidence',desc:'Effective handovers save lives. We deep-dive into SBAR (Situation, Background, Assessment, Recommendation) and how to use it fluently in any clinical setting.',author:'Kofi Mensah',date:'3 Feb 2025',read:'5 min'},
+  {cat:'Patient Care',tag:'tag-care',title:'Dignity in Care: What It Really Means at the Bedside',desc:'Beyond policy and procedure, dignity in care is a lived value. Explore what it looks like in practice through patient stories and research-based insights.',author:'Amara Diallo',date:'27 Jan 2025',read:'6 min'}
+];
+
+var TESTIMONIALS=[
+  {name:'Priya S.',role:'Student Nurse, Year 2',init:'PS',text:'HealingWorldStudios has transformed how I approach my placements. The clinical assessment course gave me frameworks I use every single shift.'},
+  {name:'Callum B.',role:'Newly Qualified Nurse',init:'CB',text:"As an NQN, I felt completely lost. The survival guide course is honest, practical, and made me feel genuinely supported. Nothing else online comes close."},
+  {name:'Fatima H.',role:'Student Nurse, Year 3',init:'FH',text:'The pharmacology content is exceptional. Clear, well-structured, evidence-based. My medication administration confidence has completely transformed.'}
+];
+
+// ─────────────────────────── AUTH ──────────────────────────────────────────
+function getUser(){try{var s=localStorage.getItem('hws_u');return s?JSON.parse(s):null;}catch(e){return null;}}
+function saveUser(u){localStorage.setItem('hws_u',JSON.stringify(u));}
+function clearUser(){localStorage.removeItem('hws_u');}
+
+function doSignIn(){
+  var email=document.getElementById('si-email').value.trim();
+  var pass=document.getElementById('si-pass').value;
+  var e=document.getElementById('signin-err');
+  e.innerHTML='';
+  if(!email||!pass){e.innerHTML='<div class="alert alert-err">Please fill in all fields.</div>';return;}
+  if(pass.length<6){e.innerHTML='<div class="alert alert-err">Invalid email or password.</div>';return;}
+  var btn=document.getElementById('signin-btn');
+  btn.disabled=true;btn.textContent='Signing in…';
+  setTimeout(function(){
+    var n=email.split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+    saveUser({name:n,email:email,enrolled:['c1','c2','c5','c6']});
+    btn.disabled=false;btn.textContent='Sign In →';
+    updateNav();go('/dashboard');
+  },700);
+}
+
+function doSignUp(){
+  var f=document.getElementById('su-first').value.trim();
+  var l=document.getElementById('su-last').value.trim();
+  var em=document.getElementById('su-email').value.trim();
+  var p=document.getElementById('su-pass').value;
+  var c=document.getElementById('su-confirm').value;
+  var e=document.getElementById('signup-err');
+  e.innerHTML='';
+  if(!f||!l||!em||!p){e.innerHTML='<div class="alert alert-err">All fields are required.</div>';return;}
+  if(!em.includes('@')){e.innerHTML='<div class="alert alert-err">Please enter a valid email address.</div>';return;}
+  if(p.length<8){e.innerHTML='<div class="alert alert-err">Password must be at least 8 characters.</div>';return;}
+  if(p!==c){e.innerHTML='<div class="alert alert-err">Passwords do not match.</div>';return;}
+  var btn=document.getElementById('signup-btn');
+  btn.disabled=true;btn.textContent='Creating account…';
+  setTimeout(function(){
+    saveUser({name:f+' '+l,email:em,enrolled:['c1']});
+    btn.disabled=false;btn.textContent='Create Account →';
+    updateNav();go('/dashboard');
+  },800);
+}
+
+function doSignOut(){clearUser();updateNav();go('/');}
+
+function doForgot(){
+  var em=document.getElementById('fp-email').value.trim();
+  var msg=document.getElementById('forgot-msg');
+  if(!em||!em.includes('@')){msg.innerHTML='<div class="alert alert-err">Please enter a valid email address.</div>';return;}
+  msg.innerHTML='<div class="alert alert-ok">✓ Reset link sent! Check your inbox — it may take a few minutes.</div>';
+  var f=document.getElementById('forgot-field');
+  var b=document.getElementById('forgot-btn');
+  if(f)f.style.display='none';
+  if(b)b.style.display='none';
+}
+
+function doSubscribe(){
+  var em=document.getElementById('sub-email').value.trim();
+  var e=document.getElementById('sub-err');
+  e.innerHTML='';
+  if(!em||!em.includes('@')){e.innerHTML='<div class="alert alert-err">Please enter a valid email address.</div>';return;}
+  document.getElementById('sub-form-wrap').style.display='none';
+  document.getElementById('sub-success').style.display='flex';
+}
+
+// ─────────────────────────── NAV ───────────────────────────────────────────
+function updateNav(){
+  var u=getUser();
+  document.getElementById('nav-dash').style.display=u?'':'none';
+  document.getElementById('nav-signout').style.display=u?'':'none';
+  document.getElementById('nav-signin').style.display=u?'none':'';
+  document.getElementById('nav-signup').style.display=u?'none':'';
+}
+
+function setActiveNav(path){
+  document.querySelectorAll('[data-nav]').forEach(function(a){
+    a.classList.toggle('active',a.getAttribute('data-nav')===path);
+  });
+}
+
+// ─────────────────────────── BUILDERS ──────────────────────────────────────
+function bdg(status){
+  if(status==='done')return'<span class="bdg bdg-done">Complete</span>';
+  if(status==='progress')return'<span class="bdg bdg-prog">In Progress</span>';
+  return'<span class="bdg bdg-lock">Locked</span>';
+}
+
+function courseCard(c,delay,showPb){
+  var cat=CATS[c.cat];
+  var lvlCls=c.progress===100?'bdg-done':c.progress>0?'bdg-prog':'bdg-lock';
+  var pb=showPb?'<div class="pbwrap"><div class="pb-lbl"><span>Progress</span><span>'+c.progress+'%</span></div><div class="pb"><div class="pb-fill" style="width:'+c.progress+'%"></div></div></div>':'';
+  return '<div class="card course-card click fade fd'+(delay%4+1)+'" onclick="go(\'/course/'+c.id+'\')">'
+    +'<span class="cat-tag '+cat.tag+'">'+cat.icon+' '+cat.label+'</span>'
+    +'<h3>'+c.title+'</h3>'
+    +'<p class="cdesc">'+c.desc+'</p>'
+    +'<div class="cmeta"><span>📚 '+c.modules+' modules</span><span>⏱ '+c.duration+'</span>'
+    +'<span class="bdg '+lvlCls+'" style="margin-left:auto">'+c.level+'</span></div>'
+    +pb+'</div>';
+}
+
+function footerHTML(){
+  return '<footer><div class="foot-grid">'
+    +'<div class="foot-brand"><div style="font-family:var(--ff-display);font-size:1.2rem;color:var(--green)">✦ HealingWorldStudios</div>'
+    +'<p>Empowering student nurses and newly qualified nurses through knowledge, community, and evidence-based learning.</p></div>'
+    +'<div class="foot-col"><h4>Platform</h4><ul>'
+    +'<li><a onclick="go(\'/courses\')">All Courses</a></li>'
+    +'<li><a onclick="go(\'/blog\')">Knowledge Hub</a></li>'
+    +'<li><a onclick="go(\'/dashboard\')">Dashboard</a></li>'
+    +'<li><a onclick="go(\'/subscribe\')">Newsletter</a></li></ul></div>'
+    +'<div class="foot-col"><h4>Account</h4><ul>'
+    +'<li><a onclick="go(\'/signup\')">Sign Up</a></li>'
+    +'<li><a onclick="go(\'/signin\')">Sign In</a></li>'
+    +'<li><a onclick="go(\'/forgot\')">Forgot Password</a></li></ul></div>'
+    +'<div class="foot-col"><h4>Legal</h4><ul>'
+    +'<li><a onclick="go(\'/terms\')">Terms of Service</a></li>'
+    +'<li><a onclick="go(\'/privacy\')">Privacy Policy</a></li></ul></div>'
+    +'</div><div class="foot-bottom">'
+    +'<span>© '+new Date().getFullYear()+' HealingWorldStudios. All rights reserved.</span>'
+    +'<span>Built for nurses, by people who care.</span>'
+    +'</div></footer>';
+}
+
+// ─────────────────────────── PAGE RENDERS ──────────────────────────────────
+function renderHome(){
+  var hc=document.getElementById('home-courses');
+  if(hc)hc.innerHTML=COURSES.slice(0,3).map(function(c,i){return courseCard(c,i,false);}).join('');
+
+  var ht=document.getElementById('home-testimonials');
+  if(ht)ht.innerHTML=TESTIMONIALS.map(function(t){
+    return '<div class="card tcard">'
+      +'<p>'+t.text+'</p>'
+      +'<div class="tauthor"><div class="tavatar">'+t.init+'</div>'
+      +'<div><div class="tname">'+t.name+'</div><div class="trole">'+t.role+'</div></div>'
+      +'</div></div>';
+  }).join('');
+
+  var u=getUser();
+  var b=document.getElementById('hero-cta1');
+  if(b){b.textContent=u?'Go to Dashboard':'Start Learning Free';b.onclick=function(){go(u?'/dashboard':'/signup');};}
+
+  var f=document.getElementById('footer-home');
+  if(f)f.innerHTML=footerHTML();
+}
+
+var _courseFilter='all';
+function renderCourses(filter){
+  if(filter!==undefined)_courseFilter=filter;
+  var filters=[['all','All'],['clinical','Clinical'],['pharma','Pharmacology'],['care','Patient Care'],['comm','Communication'],['guide','Career']];
+  var fe=document.getElementById('course-filters');
+  if(fe)fe.innerHTML=filters.map(function(f){
+    var active=_courseFilter===f[0];
+    return '<button class="btn btn-sm '+(active?'btn-primary':'btn-ghost')+'" onclick="renderCourses(\''+f[0]+'\')">' +f[1]+'</button>';
+  }).join('');
+  var list=_courseFilter==='all'?COURSES:COURSES.filter(function(c){return c.cat===_courseFilter;});
+  var ge=document.getElementById('courses-grid');
+  if(ge)ge.innerHTML=list.map(function(c,i){return courseCard(c,i,false);}).join('');
+  var f2=document.getElementById('footer-courses');
+  if(f2)f2.innerHTML=footerHTML();
+}
+
+function renderCourseDetail(id){
+  var c=COURSES.find(function(x){return x.id===id;});
+  var el=document.getElementById('course-detail-inner');
+  if(!c){if(el)el.innerHTML='<p style="padding:40px">Course not found.</p>';return;}
+  var cat=CATS[c.cat];
+  var u=getUser();
+  var enrolled=u&&u.enrolled&&u.enrolled.indexOf(id)>-1;
+
+  var pb=enrolled?'<div class="pbwrap" style="margin-top:16px"><div class="pb-lbl"><span>Your Progress</span><span>'+c.progress+'%</span></div><div class="pb"><div class="pb-fill" style="width:'+c.progress+'%"></div></div></div>':'';
+  var enrolBtn=!u?'<div style="margin-top:20px"><button class="btn btn-primary" onclick="go(\'/signup\')">Enrol &amp; Start Learning →</button></div>':'';
+  var noticeHTML=(!enrolled&&u)?'<div class="notice"><strong>Note:</strong> Enrol in this course to unlock all modules and track your progress.</div>':'';
+
+  var modsHTML=c.mods.map(function(m){
+    var ic=m.status==='done'?'✅':m.icon;
+    return '<div class="mod-item"><div class="mod-icon">'+ic+'</div>'
+      +'<div class="mod-info"><div class="mod-title">'+m.title+'</div><div class="mod-meta">⏱ '+m.dur+'</div></div>'
+      +bdg(m.status)+'</div>';
+  }).join('');
+
+  var signupBtns=!u?'<div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary" onclick="go(\'/signup\')">Create Free Account</button>'
+    +'<button class="btn btn-ghost" onclick="go(\'/signin\')">Sign In</button></div>':'';
+
+  if(el)el.innerHTML='<div class="breadcrumb">'
+    +'<a onclick="go(\'/courses\')">Courses</a><span class="sep">›</span>'
+    +'<span>'+cat.label+'</span><span class="sep">›</span>'
+    +'<span style="color:var(--text2)">'+c.title+'</span></div>'
+    +'<div class="cd-hero"><span class="cat-tag '+cat.tag+'">'+cat.icon+' '+cat.label+'</span>'
+    +'<h1>'+c.title+'</h1><p>'+c.desc+'</p>'
+    +'<div class="cd-meta"><span>📚 '+c.modules+' modules</span><span>⏱ '+c.duration+'</span><span>📊 '+c.level+'</span></div>'
+    +pb+enrolBtn+'</div>'
+    +'<h2 class="sec-heading">Course Modules</h2>'
+    +noticeHTML+modsHTML+signupBtns;
+
+  var f=document.getElementById('footer-course');
+  if(f)f.innerHTML=footerHTML();
+}
+
+function renderDashboard(){
+  var u=getUser();
+  var dn=document.getElementById('dash-name');
+  var db=document.getElementById('dash-body');
+  var ds=document.getElementById('dash-stats');
+  var df=document.getElementById('footer-dash');
+
+  if(!u){
+    if(dn)dn.textContent='Your Dashboard';
+    if(ds)ds.innerHTML='';
+    if(db)db.innerHTML='<div class="tc" style="padding:40px 0">'
+      +'<p style="color:var(--text2);margin-bottom:24px;font-size:1rem">Sign in to track your learning progress and access your courses.</p>'
+      +'<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'
+      +'<button class="btn btn-primary" onclick="go(\'/signin\')">Sign In</button>'
+      +'<button class="btn btn-outline" onclick="go(\'/signup\')">Create Account</button>'
+      +'</div></div>';
+    if(df)df.innerHTML=footerHTML();
+    return;
+  }
+
+  if(dn)dn.textContent=u.name+' 👋';
+  var enrolled=COURSES.filter(function(c){return u.enrolled&&u.enrolled.indexOf(c.id)>-1;});
+  var inProg=enrolled.filter(function(c){return c.progress>0&&c.progress<100;});
+  var done=enrolled.filter(function(c){return c.progress===100;});
+  var avg=enrolled.length?Math.round(enrolled.reduce(function(a,c){return a+c.progress;},0)/enrolled.length):0;
+
+  if(ds)ds.innerHTML=[['📚',enrolled.length,'Enrolled'],['✅',done.length,'Completed'],['🔥',inProg.length,'In Progress'],['⭐',avg+'%','Avg Progress']].map(function(s){
+    return '<div class="card stat-card"><div style="font-size:1.4rem;margin-bottom:6px">'+s[0]+'</div><div class="stat-num" style="font-size:1.9rem">'+s[1]+'</div><div class="stat-label">'+s[2]+'</div></div>';
+  }).join('');
+
+  var html='';
+  if(inProg.length){
+    html+='<div class="dash-sec"><h2 class="sec-heading">Continue Learning</h2><div class="g3">'
+      +inProg.map(function(c,i){return courseCard(c,i,true);}).join('')+'</div></div>';
+  }
+  html+='<div class="dash-sec"><h2 class="sec-heading">Your Courses</h2><div class="g3">'
+    +enrolled.map(function(c,i){return courseCard(c,i,true);}).join('')+'</div></div>';
+
+  var recent=[];
+  enrolled.forEach(function(c){
+    var m=c.mods.find(function(x){return x.status==='progress';});
+    if(m)recent.push({c:c,m:m});
+  });
+  if(recent.length){
+    html+='<div class="dash-sec"><h2 class="sec-heading">Recent Activity</h2>'
+      +recent.map(function(r){
+        return '<div class="mod-item" onclick="go(\'/course/'+r.c.id+'\')">'
+          +'<div class="mod-icon">'+r.m.icon+'</div>'
+          +'<div class="mod-info"><div class="mod-title">'+r.m.title+'</div><div class="mod-meta">'+r.c.title+' · '+r.m.dur+'</div></div>'
+          +'<span class="bdg bdg-prog">Resume →</span></div>';
+      }).join('')+'</div>';
+  }
+  html+='<div style="display:flex;gap:12px;flex-wrap:wrap;padding-bottom:8px">'
+    +'<button class="btn btn-outline" onclick="go(\'/courses\')">Browse More Courses</button>'
+    +'<button class="btn btn-ghost btn-danger" onclick="doSignOut()">Sign Out</button></div>';
+
+  if(db)db.innerHTML=html;
+  if(df)df.innerHTML=footerHTML();
+}
+
+function renderBlog(){
+  var el=document.getElementById('blog-grid');
+  if(el)el.innerHTML=BLOG.map(function(p,i){
+    var inits=p.author.split(' ').map(function(w){return w[0];}).join('').slice(0,2);
+    return '<div class="card blog-card click fade fd'+(i%4+1)+'">'
+      +'<div class="blog-meta"><span class="blog-tag '+p.tag+'">'+p.cat+'</span><span>'+p.read+' read</span><span>'+p.date+'</span></div>'
+      +'<h3>'+p.title+'</h3><p class="bdesc">'+p.desc+'</p>'
+      +'<div class="blog-foot"><div class="arow"><div class="aavatar">'+inits+'</div>'
+      +'<span style="font-size:.8rem;color:var(--text3)">'+p.author+'</span></div>'
+      +'<button class="btn btn-sm btn-ghost">Read →</button></div></div>';
+  }).join('');
+  var f=document.getElementById('footer-blog');
+  if(f)f.innerHTML=footerHTML();
+}
+
+function renderFooters(){
+  var ids=['footer-sub','footer-terms','footer-privacy'];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&!el.innerHTML.trim())el.innerHTML=footerHTML();
+  });
+}
+
+// ─────────────────────────── ROUTER ────────────────────────────────────────
+function go(path){
+  window.location.hash='#'+path;
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+function route(){
+  var hash=window.location.hash.replace(/^#/,'');
+  if(!hash||hash==='/')hash='/';
+
+  // Hide all pages
+  document.querySelectorAll('[data-page]').forEach(function(el){el.classList.remove('active');});
+
+  updateNav();
+  setActiveNav(hash);
+
+  // Course detail
+  if(hash.indexOf('/course/')===0){
+    var id=hash.replace('/course/','');
+    var pg=document.querySelector('[data-page="/course"]');
+    if(pg){pg.classList.add('active');renderCourseDetail(id);}
+    return;
+  }
+
+  var el=document.querySelector('[data-page="'+hash+'"]');
+  if(!el){document.querySelector('[data-page="/404"]').classList.add('active');return;}
+  el.classList.add('active');
+
+  if(hash==='/')renderHome();
+  else if(hash==='/courses'){_courseFilter='all';renderCourses();}
+  else if(hash==='/dashboard')renderDashboard();
+  else if(hash==='/blog')renderBlog();
+}
+
+window.addEventListener('hashchange',route);
+document.addEventListener('DOMContentLoaded',function(){
+  renderFooters();
+  // Ensure hash is set for initial load
+  if(!window.location.hash||window.location.hash==='#')window.location.hash='#/';
+  route();
+});
+</script>
+</body>
+</html>
